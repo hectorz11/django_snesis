@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %} Criterio {% endblock %}
+{% block content %}
+
+<!--IniciaModal-->
+ <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+    <h3 id="myModalLabel">Eliminar Nota</h3>
+    </div>
+    <div class="modal-body">
+    <p>¿Realmente desea eliminar el nota <span id="modal_name"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <form method="post" id="frmEliminar">
+            {% csrf_token %}
+            <input type="hidden" id="modal_idNota" name="nota_id">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+    </div>
+</div>
+<!--EndModal-->
+
+<table>
+	<tr>
+		<td><p><b>Criterio:</b></p></td>
+		<td><p>{{ criterio.descripcion }}</p></td>
+	</tr>
+	<tr>
+		<td><p><b>Porcentaje:</b><p></td>
+		<td><p>{{ criterio.porcentaje }}%</p></td>
+	</tr>
+	<tr>
+		<td><p><b>Unidad:</p></b></td>
+		<td><p>{{ criterio.unidad }}</p></td>
+	</tr>
+</table>
+<table class="table table-hover" id="tabla_notas">
+<h4>Alumnos de {{ criterio.unidad.silabo.curso.nombre }}</h4>
+{% if user.is_authenticated and user.is_staff %}
+	<a class="btn" href="{% url 'vista_agregar_nota' %}"><i class="icon-plus"></i> Nuevo </a><br>
+{% endif %}
+{% for registro in resultados %}
+	<tr>
+	<td><span class="btn"><a href=".">{{ registro.matricula.alumno.codigo }} {{ registro.matricula.alumno.nombres }} {{ registro.matricula.alumno.apellidos }}</span></td>
+	<td><a class="btn" href="/nota/{{registro.id}}/"><i class="icon-search"></i> Ver Nota </a></td>
+	{% if user.is_authenticated and user.is_staff %}
+		<td><a class="btn" href="/edit/nota/{{registro.id}}/"><i class="icon-pencil"></i>  Editar </a></td>
+		<td><a href="#myModal" role="button" class="btn btn-danger delete" data-toggle="modal" id="{{registro.id}}" data-name="{{registro.matricula.alumno.codigo}}"><i class="icon-trash icon-white"></i>Eliminar</a></td>
+	{% endif %}
+</tr>
+{% endfor %}
+</table>
+
+<a href="javascript:window.history.go(-2);" class="btn btn-primary">Regresar a la Lista</a>
+
+{% endblock %}

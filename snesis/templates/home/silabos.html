@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %} Lista de Silabos {% endblock %}
+{%block content %}
+
+<!--IniciaModal-->
+ <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <h3 id="myModalLabel">Eliminar Silabo</h3>
+    </div>
+    <div class="modal-body">
+      <p>¿Realmente desea eliminar el silabo <span id="modal_name"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <form method="post" id="frmEliminar">
+            {% csrf_token %}
+            <input type="hidden" id="modal_idSilabo" name="silabo_id">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+    </div>
+</div>
+<!--EndModal-->
+
+<h3><b>Lista de Silabos</b></h3>
+{% if user.is_authenticated %}
+<a href="{% url 'vista_agregar_silabo' %}" class="btn"><i class="icon-plus"></i> Nuevo</a><br>
+{% endif %}
+<br>
+{% if silabos %}
+    <table class="table table-hover" id="tabla_silabos">
+    	<thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Anio</th>
+                    <th>Docente</th>
+                </tr>
+      </thead>
+    {% for p in silabos %}
+     	<tbody>
+     	  <tr id="tr{{p.id}}">
+            <td>{{ p.curso }}</td>
+            <td>{{ p.anio_academico }}</td>
+            <td>{{ p.docente }}</td>
+            <td><a class="btn" href="/silabo/{{p.id}}/"><i class="icon-search"></i> Ver Datos</a></td>
+			{% if user.is_authenticated and user.is_staff %}
+				    <td><a class="btn" href="/edit/silabo/{{p.id}}/"><i class="icon-pencil"></i>  Editar </a></td>
+				    <td><a href="#myModal" role="button" class="btn btn-danger delete" data-toggle="modal" id="{{p.id}}" data-name="{{p.descripcion}}"><i class="icon-trash icon-white"></i>Eliminar</a></td>
+			{% endif %}				
+		    </tr>
+		  </tbody>
+    {% endfor %}
+    </table>
+	
+{% else %}
+	<h2>No existen silabos activos en el SNESIS :( </h2>
+{% endif %}
+{% if silabos %}
+    <div class="pagination">
+    <ul>
+		<li><a href="/silabos/page/1"> << </a></li>
+	{% if silabos.has_previous %}
+		<li><a href="/silabos/page/{{silabos.previous_page_number }}/"> Prev </a></li>
+	{% else %}
+		<li><a href="#"> Prev </a></li>
+	{% endif %}
+	{% if silabos.has_next %}
+		<li><a href="/silabos/page/{{silabos.next_page_number }}/"> Next </a></li>
+	{% else %}
+		<li><a href="#"> Next </a></li>
+	{% endif %}
+		<li><a href="/silabos/page/{{silabos.paginator.num_pages }} "> >> </a><li>
+	</ul>
+	</div>
+	<h4> Página {{ silabos.number }} de {{ silabos.paginator.num_pages }}</h4>
+{% endif %}
+{% endblock %}

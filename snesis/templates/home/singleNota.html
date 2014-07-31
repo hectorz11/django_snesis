@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %} Criterio {% endblock %}
+{% block content %}
+
+<table>
+	<tr>
+		<td><p><b>Alumno:</b></p></td>
+		<td><p>{{ nota.matricula.alumno.nombres }} {{ nota.matricula.alumno.apellidos }}</p></td>
+	</tr>
+	<tr>
+		<td><p><b>Curso:</b><p></td>
+		<td><p>{{ nota.criterio.unidad.silabo.curso.nombre }}</p></td>
+	</tr>
+	<tr>
+		<td><p><b>Unidad:</p></b></td>
+		<td><p>{{ nota.criterio.unidad.descripcion }}</p></td>
+	</tr>
+		<tr>
+		<td><p><b>Criterio:</p></b></td>
+		<td><p>{{ nota.criterio.descripcion }}</p></td>
+	</tr>
+		</tr>
+		<tr>
+		<td><p><b>Nota:</p></b></td>
+		<td><p>{{ nota.nota}}</p></td>
+	</tr>
+</table>
+
+<a href="javascript:window.history.go(-1);" class="btn btn-primary">Regresar a la Lista</a>
+
+{% endblock %}

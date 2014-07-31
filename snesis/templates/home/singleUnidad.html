@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %} Unidad {% endblock %}
+{% block content %}
+
+<!--IniciaModal-->
+ <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+    <h3 id="myModalLabel">Eliminar Criterio</h3>
+    </div>
+    <div class="modal-body">
+    <p>¿Realmente desea eliminar el criterio <span id="modal_name"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <form method="post" id="frmEliminar">
+            {% csrf_token %}
+            <input type="hidden" id="modal_idCriterio" name="criterio_id">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+    </div>
+</div>
+<!--EndModal-->
+
+<table>
+	<tr>
+		<td><p><b>Unidad:</b></p></td>
+		<td><p>{{ unidad.descripcion }}</p></td>
+	</tr>
+	<tr>
+		<td><p><b>Porcentaje:</b><p></td>
+		<td><p>{{ unidad.porcentaje }} %</p></td>
+	</tr>
+	<tr>
+		<td><p><b>Silabo:</p></b></td>
+		<td><p>{{ unidad.silabo }}</p></td>
+	</tr>
+
+</table>
+<table class="table table-hover" id="tabla_criterios">
+<h4>Criterios</h4>
+{% if user.is_authenticated and user.is_staff %}
+	<a class="btn" href="{% url 'vista_agregar_criterio' %}"><i class="icon-plus"></i> Nuevo </a><br>
+{% endif %}
+{% for registro in resultados %}
+	<tr>
+	<td><span class="btn"><a href=".">{{ registro.descripcion }} </span></td>
+	<td><a class="btn" href="/criterio/{{registro.id}}/"><i class="icon-search"></i> Ver Criterio </a></td>
+	{% if user.is_authenticated and user.is_staff %}
+		<td><a class="btn" href="/edit/criterio/{{registro.id}}/"><i class="icon-pencil"></i>  Editar </a></td>
+		<td><a href="#myModal" role="button" class="btn btn-danger delete" data-toggle="modal" id="{{registro.id}}" data-name="{{registro.descripcion}}"><i class="icon-trash icon-white"></i>Eliminar</a></td>
+	{% endif %}
+	</tr>
+{% endfor %}
+</table>
+
+<a href="javascript:window.history.go(-2);" class="btn btn-primary">Regresar a la Lista</a>
+
+{% endblock %}
